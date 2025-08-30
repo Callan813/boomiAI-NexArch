@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ShareHub - Rental Platform
 
 ShareHub is a modern peer-to-peer rental platform that connects people who have items to rent with those who need them. Built with Next.js and Tailwind CSS, ShareHub makes it easy to monetize your unused items while providing affordable access to goods for renters.
@@ -79,3 +80,6 @@ This project is licensed under the MIT License.
 ## Support
 
 For support, email support@sharehub.com or join our community Discord.
+=======
+# boomiAI-NexArch
+>>>>>>> def4dab84a4d8a56e3750fd11015c2a0d28265e0
