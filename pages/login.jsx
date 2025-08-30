@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Login() {
   const [form, setForm] = useState({
@@ -57,78 +59,82 @@ export default function Login() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "auto", padding: "20px" }}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <div style={{ marginBottom: "15px" }}>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-              fontSize: "16px"
-            }}
-          />
+    <div className="min-h-screen bg-gray-50">
+      {/* Common Header */}
+      <Header />
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Login</h2>
+            
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-200"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  value={form.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-colors duration-200"
+                />
+              </div>
+              
+              <button 
+                type="submit" 
+                disabled={isLoading}
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </button>
+            </form>
+            
+            {message && (
+              <div className={`mt-6 p-4 rounded-lg ${
+                message.includes("✅") 
+                  ? "bg-green-50 text-green-800 border border-green-200" 
+                  : "bg-red-50 text-red-800 border border-red-200"
+              }`}>
+                {message}
+              </div>
+            )}
+            
+            <div className="mt-8 text-center">
+              <p className="text-gray-600">
+                Don't have an account?{" "}
+                <a href="/signup" className="text-green-600 hover:text-green-700 font-medium hover:underline transition-colors duration-200">
+                  Sign up here
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
-        <div style={{ marginBottom: "15px" }}>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            required
-            style={{
-              width: "100%",
-              padding: "10px",
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-              fontSize: "16px"
-            }}
-          />
-        </div>
-        <button 
-          type="submit" 
-          disabled={isLoading}
-          style={{
-            width: "100%",
-            padding: "12px",
-            backgroundColor: "#0070f3",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            fontSize: "16px",
-            cursor: isLoading ? "not-allowed" : "pointer",
-            opacity: isLoading ? 0.7 : 1
-          }}
-        >
-          {isLoading ? "Logging in..." : "Login"}
-        </button>
-      </form>
-      
-      {message && (
-        <div style={{
-          marginTop: "20px",
-          padding: "10px",
-          borderRadius: "4px",
-          backgroundColor: message.includes("✅") ? "#d4edda" : "#f8d7da",
-          color: message.includes("✅") ? "#155724" : "#721c24",
-          border: `1px solid ${message.includes("✅") ? "#c3e6cb" : "#f5c6cb"}`
-        }}>
-          {message}
-        </div>
-      )}
-      
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
-        <p>Don't have an account? <a href="/signup" style={{ color: "#0070f3" }}>Sign up here</a></p>
-      </div>
+      </main>
+
+      {/* Common Footer */}
+      <Footer />
     </div>
   );
 }

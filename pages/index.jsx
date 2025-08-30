@@ -1,261 +1,315 @@
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabaseClient";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 export default function Home() {
-  const [selectedCategory, setSelectedCategory] = useState("ALL CATEGORIES");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [location, setLocation] = useState("HSR Layout Sector 6, B...");
+  const [location, setLocation] = useState("Near London");
+  const [rentalPeriod, setRentalPeriod] = useState("August 30 - September 1");
 
-  const categories = [
-    "ALL CATEGORIES",
-    "Cars",
-    "Motorcycles", 
-    "Mobile Phones",
-    "For Sale: Houses & Apartments",
-    "Scooters",
-    "Commercial & Other Vehicles",
-    "For Rent: Houses & Apartments"
-  ];
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-  const rentalItems = [
-    {
-      name: "Samsung 200litres fridge & 6.5kg washing machine",
-      category: "Electronics",
-      lender: "Sarah M.",
-      rating: 4.8,
-      price: "₹ 12,999",
-      image: "/fridge.jpg",
-      location: "HSR LAYOUT SECTOR 6, BENGALURU",
-      date: "TODAY",
-      featured: true
-    },
-    {
-      name: "OnePlus Nord Smartphone",
-      category: "Electronics",
-      lender: "Mike R.",
-      rating: 4.9,
-      price: "₹ 15,000",
-      image: "/phone.jpg",
-      location: "HSR LAYOUT SECTOR 6, BENGALURU",
-      date: "AUG 20",
-      featured: false
-    },
-    {
-      name: "Redmi 9 Prime",
-      category: "Electronics",
-      lender: "Alex K.",
-      rating: 4.7,
-      price: "₹ 2,500",
-      image: "/redmi.jpg",
-      location: "HSR LAYOUT SECTOR 6, BENGALURU",
-      date: "AUG 20",
-      featured: false
-    },
-    {
-      name: "Honda Jazz Car",
-      category: "Vehicles",
-      lender: "Emma L.",
-      rating: 4.6,
-      price: "₹ 6,20,000",
-      image: "/car.jpg",
-      location: "HSR LAYOUT SECTOR 6, BENGALURU",
-      date: "AUG 20",
-      featured: true
-    },
-    {
-      name: "Hyundai Creta",
-      category: "Vehicles",
-      lender: "David P.",
-      rating: 4.8,
-      price: "₹ 9,95,000",
-      image: "/creta.jpg",
-      location: "HSR LAYOUT SECTOR 6, BENGALURU",
-      date: "AUG 20",
-      featured: false
-    },
-    {
-      name: "2BHK Apartment for Sale",
-      category: "Real Estate",
-      lender: "Lisa T.",
-      rating: 4.5,
-      price: "₹ 36,00,000",
-      image: "/apartment.jpg",
-      location: "HSR LAYOUT SECTOR 6, BENGALURU",
-      date: "AUG 20",
-      featured: true
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('items')
+        .select(`
+          *,
+          users!items_user_id_fkey (
+            full_name,
+            profile_pic,
+            credibility_score
+          )
+        `)
+        .eq('available', true)
+        .order('created_at', { ascending: false })
+        .limit(8);
+
+      if (error) {
+        throw error;
+      }
+
+      setProducts(data || []);
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setError('Failed to load products');
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const formatPrice = (price) => {
+    return `₹${parseFloat(price).toFixed(0)}/day`;
+  };
+
+  const getCategoryIcon = (category) => {
+    const icons = {
+      'Electronics': '📱',
+      'Furniture': '🪑',
+      'Tools': '🔧',
+      'Sports': '⚽',
+      'Books': '📚',
+      'Clothing': '👕',
+      'Vehicles': '🚗',
+      'default': '📦'
+    };
+    return icons[category] || icons.default;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-orange-100">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-400 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading products...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-orange-100">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <div className="text-red-600 text-xl mb-4">⚠️</div>
+            <p className="text-gray-600">{error}</p>
+            <button 
+              onClick={fetchProducts}
+              className="mt-4 bg-orange-400 text-white px-6 py-2 rounded-lg hover:bg-orange-500 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            {/* Left Side - Logo and Search */}
-            <div className="flex items-center space-x-6 flex-1">
-              {/* Logo */}
-              <div className="flex items-center">
-                <div className="w-12 h-8 bg-blue-600 rounded font-bold text-white text-xl flex items-center justify-center">
-                  olx
-                </div>
-              </div>
-
-              {/* Location Search */}
-              <div className="relative">
-                <input
-                  type="text"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  className="w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  placeholder="Location"
-                />
-                <svg className="w-5 h-5 absolute right-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-
-              {/* Product Search */}
-              <div className="relative flex-1 max-w-md">
-                <input
-                  type="text"
-                  placeholder="Search 'Cars'"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                />
-                <svg className="w-5 h-5 absolute left-3 top-2.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
-
-            {/* Right Side - Actions */}
-            <div className="flex items-center space-x-4">
-              <button className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <span className="text-sm font-medium">ENGLISH</span>
-                <svg className="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              <button className="text-gray-700 hover:text-gray-900 p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </button>
-              
-              <Link href="/login" className="text-gray-700 hover:text-gray-900 font-medium px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                Login
-              </Link>
-              
-              <Link href="/signup">
-                <button className="bg-gradient-to-r from-yellow-400 to-blue-500 text-white px-6 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-blue-600 transition-all duration-200 shadow-md hover:shadow-lg">
-                  + SELL
-                </button>
-              </Link>
-            </div>
-          </div>
+    <div className="min-h-screen bg-orange-100">
+      <Header />
+      
+      {/* Hero Section - Light Orange Background */}
+      <section className="bg-orange-100 text-gray-800 py-20 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-20 right-10 w-32 h-32 bg-orange-300 rounded-full"></div>
+          <div className="absolute top-40 right-32 w-16 h-16 bg-orange-400 rounded-full"></div>
+          <div className="absolute bottom-20 right-20 w-24 h-24 bg-orange-300 rounded-full"></div>
         </div>
-      </header>
 
-      {/* Category Navigation */}
-      <nav className="bg-white border-b border-gray-200 sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-8 py-3 overflow-x-auto scrollbar-hide">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`whitespace-nowrap text-sm font-medium transition-colors duration-200 px-3 py-2 rounded-lg ${
-                  selectedCategory === category
-                    ? "text-blue-600 bg-blue-50 border-b-2 border-blue-600"
-                    : "text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                {category}
-                {category === "ALL CATEGORIES" && (
-                  <svg className="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Fresh Recommendations Title */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 font-serif">Fresh recommendations</h1>
-        
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Product Cards */}
-          {rentalItems.map((item, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
-              {/* Image Section */}
-              <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200">
-                <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl group-hover:scale-110 transition-transform duration-300">
-                  📷
-                </div>
-                
-                {/* Featured Tag */}
-                {item.featured && (
-                  <div className="absolute bottom-2 left-2 bg-yellow-400 text-yellow-900 text-xs font-bold px-2 py-1 rounded shadow-sm">
-                    FEATURED
-                  </div>
-                )}
-                
-                {/* Heart Icon */}
-                <button className="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-all duration-200 opacity-0 group-hover:opacity-100">
-                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                </button>
-              </div>
-              
-              {/* Details Section */}
-              <div className="p-4">
-                <div className="text-xl font-bold text-gray-900 mb-2">{item.price}</div>
-                <h3 className="text-sm text-gray-700 mb-2 line-clamp-2 leading-tight">{item.name}</h3>
-                <div className="text-xs text-gray-500 space-y-1">
-                  <div className="font-medium">{item.location}</div>
-                  <div className="text-gray-400">{item.date}</div>
-                </div>
-              </div>
-            </div>
-          ))}
+        {/* Main Content */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          {/* Main Headline */}
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 text-gray-900">
+            Rent instead of buying
+          </h1>
           
-          {/* Call to Action Card */}
-          <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg p-6 flex flex-col justify-center text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <h3 className="text-lg font-semibold mb-3">Want to see your stuff here?</h3>
-            <p className="text-sm text-blue-100 mb-4 leading-relaxed">
-              Make some extra cash by selling things in your community. Go on, it's quick and easy.
-            </p>
-            <Link href="/signup">
-              <button className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-gray-100 transition-all duration-200 shadow-sm hover:shadow-md">
-                Start selling
-              </button>
-            </Link>
-          </div>
-        </div>
-      </main>
+          {/* Sub-headline */}
+          <p className="text-xl md:text-2xl mb-12 text-gray-700">
+            Nearby and at times that suit you
+          </p>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-600">
-            <p className="text-sm">
-              © 2024 RentShare. All rights reserved. | 
-              <Link href="/signup" className="text-blue-600 hover:text-blue-800 ml-2 font-medium hover:underline transition-colors duration-200">
-                Join our rental community
-              </Link>
-            </p>
+          {/* Large Search Bar */}
+          <div className="max-w-3xl mx-auto mb-8">
+            <div className="relative">
+              <div className="flex bg-white rounded-2xl shadow-lg overflow-hidden">
+                {/* Search Input */}
+                <div className="flex-1 flex items-center px-6 py-4">
+                  <svg className="w-6 h-6 text-gray-400 mr-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search for what you want to rent"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="flex-1 text-gray-900 text-lg placeholder-gray-500 focus:outline-none"
+                  />
+                </div>
+                
+                {/* Search Button */}
+                <button className="bg-red-500 hover:bg-red-600 text-white px-8 py-4 text-lg font-semibold transition-colors duration-200">
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Search Filters */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center text-sm">
+            {/* Location Filter */}
+            <div className="flex items-center text-gray-700">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              <span>{location} </span>
+              <button className="text-red-500 hover:text-red-600 ml-1 font-medium">(change)</button>
+            </div>
+
+            {/* Rental Period Filter */}
+            <div className="flex items-center text-gray-700">
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Rental period {rentalPeriod} </span>
+              <button className="text-red-500 hover:text-red-600 ml-1 font-medium">(change)</button>
+            </div>
           </div>
         </div>
-      </footer>
+
+        {/* Decorative Illustrations - Bottom Right */}
+        <div className="absolute bottom-0 right-0 w-96 h-96 opacity-30">
+          <div className="relative w-full h-full">
+            {/* Trees/Foliage */}
+            <div className="absolute bottom-0 right-0 w-32 h-32 bg-orange-300 rounded-full"></div>
+            <div className="absolute bottom-8 right-24 w-20 h-20 bg-orange-400 rounded-full"></div>
+            <div className="absolute bottom-16 right-16 w-16 h-16 bg-orange-300 rounded-full"></div>
+            
+            {/* Rental Items */}
+            <div className="absolute bottom-20 right-32 w-8 h-8 bg-gray-600 rounded-full"></div> {/* Bicycle wheel */}
+            <div className="absolute bottom-24 right-28 w-6 h-6 bg-gray-600 rounded-full"></div> {/* Scooter wheel */}
+            <div className="absolute bottom-32 right-36 w-4 h-4 bg-gray-600 rounded-full"></div> {/* Drone */}
+            
+            {/* Stars */}
+            <div className="absolute bottom-40 right-20 w-2 h-2 bg-yellow-500 rounded-full"></div>
+            <div className="absolute bottom-36 right-16 w-2 h-2 bg-yellow-500 rounded-full"></div>
+            <div className="absolute bottom-44 right-24 w-2 h-2 bg-yellow-500 rounded-full"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products Section */}
+      <section className="py-16 bg-orange-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              Popular Items Near You
+            </h2>
+            <p className="text-gray-700 max-w-2xl mx-auto">
+              Discover amazing items available for rent in your area
+            </p>
+          </div>
+
+          {products.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-gray-400 text-6xl mb-4">📦</div>
+              <h3 className="text-xl font-medium text-gray-600 mb-2">No products available</h3>
+              <p className="text-gray-500">Be the first to list an item for rent!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {products.map((product) => (
+                <div key={product.item_id} className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group">
+                  {/* Product Image */}
+                  <div className="relative h-48 bg-gray-100 overflow-hidden">
+                    {product.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={product.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl">
+                        {getCategoryIcon(product.category)}
+                      </div>
+                    )}
+                    <div className="absolute top-3 right-3 bg-orange-400 text-white text-xs px-2 py-1 rounded-full font-medium">
+                      {product.condition || 'Good'}
+                    </div>
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-900 text-lg mb-2 line-clamp-2">
+                      {product.title}
+                    </h3>
+                    
+                    {/* Lender Info */}
+                    <div className="flex items-center mb-3">
+                      <div className="w-8 h-8 bg-gray-200 rounded-full mr-3 flex items-center justify-center">
+                        {product.users?.profile_pic ? (
+                          <img
+                            src={product.users.profile_pic}
+                            alt={product.users.full_name}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-gray-600 text-sm font-medium">
+                            {product.users?.full_name?.charAt(0) || 'U'}
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">
+                          {product.users?.full_name || 'Unknown User'}
+                        </p>
+                        <div className="flex items-center">
+                          <span className="text-yellow-500 text-xs">★</span>
+                          <span className="text-xs text-gray-600 ml-1">
+                            {product.users?.credibility_score?.toFixed(1) || '0.0'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Price and Action */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-xl font-bold text-orange-500">
+                        {formatPrice(product.price_per_day)}
+                      </div>
+                      <button className="bg-orange-400 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-orange-500 transition-colors">
+                        Rent Now
+                      </button>
+                    </div>
+
+                    {/* Category Badge */}
+                    {product.category && (
+                      <div className="mt-3">
+                        <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full">
+                          {product.category}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 bg-orange-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Ready to Start Earning?
+          </h2>
+          <p className="text-gray-700 mb-8 text-lg">
+            Join our community of lenders and renters. Turn your unused items into a source of income.
+          </p>
+          <button className="bg-orange-400 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:bg-orange-500 transition-colors shadow-lg hover:shadow-xl">
+            Create Your First Listing
+          </button>
+        </div>
+      </section>
+
+      <Footer />
     </div>
   );
 }
