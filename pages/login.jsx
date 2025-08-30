@@ -1,15 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { supabase } from "../lib/supabaseClient";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function Login() {
+  const router = useRouter();
   const [form, setForm] = useState({
     email: "",
     password: ""
   });
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push('/profile');
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -45,11 +58,12 @@ export default function Login() {
       }
 
       // Login successful
-      setMessage("✅ Login successful! Welcome back, " + userData.full_name);
+      setMessage("✅ Login successful! Redirecting to profile...");
       
-      // You can redirect here or set user state
-      // For example, redirect to dashboard:
-      // window.location.href = "/dashboard";
+      // Redirect to profile page after a short delay
+      setTimeout(() => {
+        router.push('/profile');
+      }, 1500);
       
     } catch (error) {
       setMessage("❌ An error occurred: " + error.message);

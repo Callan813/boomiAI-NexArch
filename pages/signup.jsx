@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { supabase } from "../lib/supabaseClient";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function Signup() {
+  const router = useRouter();
   const [form, setForm] = useState({
     full_name: "",
     email: "",
@@ -12,6 +14,17 @@ export default function Signup() {
     address: ""
   });
   const [message, setMessage] = useState("");
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push('/profile');
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -47,7 +60,12 @@ export default function Signup() {
     if (insertError) {
       setMessage("⚠️ Insert error: " + insertError.message);
     } else {
-      setMessage("✅ User signed up! Please check your email.");
+      setMessage("✅ User signed up! Redirecting to profile...");
+      
+      // Redirect to profile page after a short delay
+      setTimeout(() => {
+        router.push('/profile');
+      }, 1500);
     }
   };
 
