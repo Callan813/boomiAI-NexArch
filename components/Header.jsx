@@ -274,28 +274,28 @@ export default function Header() {
   return (
     <>
       {/* Header */}
-      <header className="bg-orange-500 shadow-sm border-b border-orange-600 sticky top-0 z-50">
+      <header className="bg-orange-500/95 backdrop-blur-md shadow-lg border-b border-orange-400/30 sticky top-0 z-50 transition-all duration-500 hover:bg-orange-500/90 hover:shadow-xl animate-slide-down">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-6">
             {/* Left Side - Logo and Search */}
-            <div className="flex items-center space-x-6 flex-1">
+            <div className="flex items-center space-x-8 flex-1">
                              {/* Logo */}
-               <Link href="/" className="flex items-center">
-                 <div className="flex items-center space-x-2">
-                   <div className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center">
-                     <svg className="w-6 h-6 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               <Link href="/" className="flex items-center group">
+                 <div className="flex items-center space-x-3 transform transition-all duration-300 group-hover:scale-105">
+                   <div className="w-12 h-12 bg-white/95 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:bg-white border border-white/30">
+                     <svg className="w-7 h-7 text-orange-700 transform transition-transform duration-300 group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
                      </svg>
                    </div>
-                   <span className="text-2xl font-bold text-white">ShareHub</span>
+                   <span className="text-3xl font-bold text-white drop-shadow-lg group-hover:drop-shadow-xl transition-all duration-300">ShareHub</span>
                  </div>
                </Link>
 
                                                            {/* Location Search */}
-                <div className="relative location-search">
+                <div className="relative location-search group">
                   <div className="flex items-center">
                     <div className="relative flex-1">
-                      <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-orange-500 transition-all duration-300 group-hover:text-orange-600 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
@@ -308,15 +308,15 @@ export default function Header() {
                           setShowLocationDropdown(true);
                         }}
                         onFocus={() => setShowLocationDropdown(true)}
-                        className="w-80 pl-10 pr-4 py-3 border-2 border-orange-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-transparent text-sm bg-white/90 backdrop-blur-sm hover:bg-white hover:border-orange-300/80 transition-all duration-300"
+                        className="w-80 pl-12 pr-14 py-4 border-2 border-orange-200/40 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:border-orange-300/50 text-sm bg-white/95 backdrop-blur-md hover:bg-white hover:border-orange-300/60 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] focus:scale-[1.02]"
                         placeholder="Search location..."
                       />
                       <button
                         onClick={getCurrentLocation}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-orange-500 hover:text-orange-600 hover:bg-orange-50 rounded-md transition-all duration-200 cursor-pointer"
-                        title="Use current location"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 p-2 text-orange-500 hover:text-orange-600 hover:bg-gradient-to-r hover:from-orange-50/80 hover:to-pink-50/80 rounded-full transition-all duration-300 cursor-pointer hover:scale-125 active:scale-95 shadow-sm hover:shadow-md group border border-orange-200/30 hover:border-orange-300/60"
+                        title="📍 Use current location"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 group-hover:animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
@@ -326,10 +326,10 @@ export default function Header() {
                  
                  {/* Location Dropdown */}
                  {showLocationDropdown && (location.length > 0 || searchResults.length > 0) && (
-                   <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-orange-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
+                   <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-md border border-orange-200/40 rounded-2xl shadow-2xl z-50 max-h-64 overflow-y-auto animate-fade-in">
                      {isSearching ? (
-                       <div className="p-3 text-center text-gray-500">
-                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500 mx-auto"></div>
+                       <div className="p-4 text-center text-gray-500">
+                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-orange-500 mx-auto"></div>
                          <span className="ml-2">Searching...</span>
                        </div>
                      ) : searchResults.length > 0 ? (
@@ -341,14 +341,14 @@ export default function Header() {
                              setShowLocationDropdown(false);
                              setSearchResults([]);
                            }}
-                           className="p-3 hover:bg-orange-50 cursor-pointer border-b border-gray-100 last:border-b-0"
+                           className="p-4 hover:bg-orange-50/80 cursor-pointer border-b border-gray-100/50 last:border-b-0 transition-all duration-200 hover:scale-[1.01] transform"
                          >
                            <div className="font-medium text-gray-900">{place.display_name.split(',')[0]}</div>
                            <div className="text-sm text-gray-600">{place.display_name.split(',').slice(1, 3).join(',')}</div>
                          </div>
                        ))
                      ) : location.length > 0 ? (
-                       <div className="p-3 text-gray-500 text-center">No results found</div>
+                       <div className="p-4 text-gray-500 text-center">No results found</div>
                      ) : null}
                    </div>
                  )}
@@ -360,15 +360,15 @@ export default function Header() {
                  if (searchQuery.trim()) {
                    router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
                  }
-               }} className="relative w-80">
+               }} className="relative w-80 group">
                  <input
                    type="text"
                    placeholder="Search 'Cars'"
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
-                   className="w-full px-4 py-3 pl-10 border-2 border-orange-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-transparent text-sm bg-white/90 backdrop-blur-sm hover:bg-white hover:border-orange-300/80 transition-all duration-300"
+                   className="w-full px-12 py-4 border-2 border-orange-200/40 rounded-2xl focus:outline-none focus:ring-2 focus:ring-orange-200/60 focus:border-orange-300/50 text-sm bg-white/95 backdrop-blur-md hover:bg-white hover:border-orange-300/60 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] focus:scale-[1.02]"
                  />
-                 <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <svg className="w-5 h-5 absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-orange-500 transition-all duration-300 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                  </svg>
                </form>
@@ -376,17 +376,23 @@ export default function Header() {
 
             {/* Right Side - Actions */}
             <div className="flex items-center space-x-4">
-              <button className="text-white hover:text-orange-100 px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200">
-                <span className="text-sm font-medium">ENGLISH</span>
-                <svg className="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+              <button className="group relative text-white hover:text-orange-50 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 backdrop-blur-sm border border-white/20 hover:border-white/40 transform hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-300/20 to-pink-300/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="relative flex items-center space-x-1.5">
+                  <span className="text-sm font-bold tracking-wide">🌍 ENGLISH</span>
+                  <svg className="w-4 h-4 transition-all duration-500 group-hover:rotate-180 group-hover:text-yellow-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </button>
               
-              <button className="text-white hover:text-orange-100 p-2 rounded-lg hover:bg-orange-600 transition-colors duration-200">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              <button className="group relative text-white hover:text-pink-100 p-3 rounded-full bg-gradient-to-br from-pink-400/20 to-red-400/20 hover:from-pink-400/40 hover:to-red-400/40 transition-all duration-300 backdrop-blur-sm border-2 border-pink-300/30 hover:border-pink-300/60 transform hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl animate-pulse hover:animate-bounce overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-200/20 to-red-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></div>
+                <svg className="relative w-5 h-5 transition-all duration-300 group-hover:scale-125 drop-shadow-lg" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
+                <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-400 rounded-full animate-ping"></div>
+                <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full"></div>
               </button>
               
               {/* Profile/Login Section */}
@@ -396,46 +402,64 @@ export default function Header() {
                     <div className="relative group">
                       <button 
                         onClick={() => router.push('/profile')}
-                        className="text-white hover:text-orange-100 p-2 rounded-lg hover:bg-orange-600 transition-colors duration-200"
-                        title="Profile"
+                        className="group relative text-white hover:text-blue-100 p-3 rounded-full bg-gradient-to-br from-blue-400/20 to-purple-400/20 hover:from-blue-400/40 hover:to-purple-400/40 transition-all duration-300 backdrop-blur-sm border-2 border-blue-300/30 hover:border-purple-300/60 transform hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden"
+                        title="👤 Profile"
                       >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-200/20 to-purple-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <svg className="relative w-5 h-5 transition-all duration-300 group-hover:scale-125 drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
+                        <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
+                        <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full"></div>
                       </button>
                       
                       {/* Profile Dropdown */}
-                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-orange-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                        <div className="py-2">
-                          <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                            <p className="font-medium">{user.email}</p>
+                      <div className="absolute right-0 top-full mt-3 w-56 bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-2 border-gradient-to-r from-blue-200/50 to-purple-200/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 to-purple-50/80"></div>
+                        <div className="relative py-3">
+                          <div className="px-5 py-3 text-sm text-gray-700 border-b border-gradient-to-r from-blue-100/60 to-purple-100/60">
+                            <p className="font-bold text-gray-800 flex items-center space-x-2">
+                              <span>👋</span><span>{user.email}</span>
+                            </p>
                           </div>
                           <button
                             onClick={() => router.push('/profile')}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 transition-colors"
+                            className="w-full text-left px-5 py-3 text-sm text-gray-700 hover:bg-gradient-to-r hover:from-blue-50/80 hover:to-purple-50/80 transition-all duration-200 hover:scale-[1.02] transform font-medium flex items-center group/item space-x-3"
                           >
-                            My Profile
+                            <span className="text-lg group-hover/item:animate-bounce">🏠</span>
+                            <span>My Profile</span>
                           </button>
                           <button
                             onClick={handleSignOut}
-                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                            className="w-full text-left px-5 py-3 text-sm text-red-600 hover:bg-gradient-to-r hover:from-red-50/80 hover:to-pink-50/80 transition-all duration-200 hover:scale-[1.02] transform font-medium flex items-center group/item space-x-3"
                           >
-                            Sign Out
+                            <span className="text-lg group-hover/item:animate-bounce">👋</span>
+                            <span>Sign Out</span>
                           </button>
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <Link href="/login" className="text-white hover:text-orange-100 font-medium px-3 py-2 rounded-lg hover:bg-orange-600 transition-colors duration-200">
-                      Login
+                    <Link href="/login" className="group relative text-white hover:text-cyan-100 font-bold px-5 py-2.5 rounded-full bg-gradient-to-r from-cyan-400/20 to-blue-400/20 hover:from-cyan-400/40 hover:to-blue-400/40 transition-all duration-300 backdrop-blur-sm border-2 border-cyan-300/30 hover:border-blue-300/60 transform hover:scale-110 active:scale-95 shadow-lg hover:shadow-xl overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-cyan-200/20 to-blue-200/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <span className="relative flex items-center space-x-1.5">
+                        🔑 <span>Login</span>
+                      </span>
                     </Link>
                   )}
                   
                                      <button 
                      onClick={() => setShowListingPopup(true)}
-                     className="bg-white/90 backdrop-blur-sm text-orange-700 px-6 py-2 rounded-lg font-semibold hover:bg-white transition-all duration-200 shadow-md hover:shadow-lg border-2 border-orange-200/60"
+                     className="group relative bg-gradient-to-r from-yellow-300/90 to-orange-300/90 hover:from-yellow-300 hover:to-orange-300 backdrop-blur-md text-orange-800 px-6 py-3 rounded-full font-black hover:bg-white transition-all duration-300 shadow-xl hover:shadow-2xl border-3 border-yellow-200/60 hover:border-yellow-300/80 transform hover:scale-110 active:scale-95 hover:-translate-y-1 overflow-hidden animate-pulse hover:animate-bounce"
                    >
-                     + LIST
+                     <div className="absolute inset-0 bg-gradient-to-r from-yellow-100/50 to-orange-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                     <span className="relative flex items-center font-black tracking-wide space-x-2">
+                       <span>✨</span><span>+ LIST</span><span>✨</span>
+                     </span>
+                     <div className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-red-400 rounded-full animate-ping"></div>
+                     <div className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-red-500 rounded-full flex items-center justify-center">
+                       <span className="text-xs text-white font-bold">!</span>
+                     </div>
                    </button>
                 </>
               )}

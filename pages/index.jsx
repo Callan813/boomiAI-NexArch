@@ -437,7 +437,7 @@ export default function Home() {
           
           {/* Sub-headline with Animation */}
           <p className="text-xl md:text-2xl mb-12 text-gray-700 animate-fade-in-up delay-200">
-            Nearby and at times that suit you
+            Get what you need, when you need it - from people nearby
           </p>
 
           {/* Large Search Bar with Enhanced Definition */}
