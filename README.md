@@ -219,3 +219,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 **ShareHub** - Making sharing simple, safe, and smart with AI. 🚀
+
+---
+
+**
+*Built with ❤️ by [Aaron Neil Rebello](https://github.com/Aaron1374) and [Callan Gonsalves](https://github.com/Callan813)*
+
